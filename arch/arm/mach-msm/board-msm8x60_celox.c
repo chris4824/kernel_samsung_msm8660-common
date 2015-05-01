@@ -42,6 +42,12 @@
 #include <linux/dma-mapping.h>
 #include <linux/i2c/bq27520.h>
 #include <linux/fastchg.h> 
+#ifdef CONFIG_THERMAL_TSENS8X60
+#include <linux/msm_tsens.h> 
+#endif
+#ifdef CONFIG_THERMAL_MONITOR
+#include <linux/msm_thermal.h>
+#endif
 
 #ifdef CONFIG_TOUCHSCREEN_MELFAS
 #define TOUCHSCREEN_IRQ 		125  
@@ -8337,10 +8343,36 @@ static struct platform_device bcm4330_bluetooth_device = {
 };
 #endif
 
+#ifdef CONFIG_THERMAL_MONITOR
+static struct tsens_platform_data msm_tsens_pdata  = {
+		.slope 			= 702,
+		.tsens_factor		= 1000,
+		.hw_type		= MSM_8660,
+		.tsens_num_sensor	= 6,
+};
+#endif
+
+#ifdef CONFIG_THERMAL_TSENS8X60
+static struct platform_device msm_tsens_device = {
+	.name   = "tsens8x60-tm",
+	.id = -1,
+};
+#else
 static struct platform_device msm_tsens_device = {
 	.name   = "tsens-tm",
 	.id = -1,
 };
+#endif
+
+#ifdef CONFIG_THERMAL_MONITOR
+static struct msm_thermal_data msm_thermal_pdata = {
+	.sensor_id = 0,
+	.poll_ms = 1000,
+	.limit_temp = 60,
+	.temp_hysteresis = 10,
+	.limit_freq = 918000,
+};
+#endif
 
 #ifdef CONFIG_VP_A2220
 #ifdef CONFIG_USE_A2220_B
@@ -16793,6 +16825,13 @@ static void __init msm8x60_init(struct msm_board_data *board_data)
 #endif
 
 	pmic_reset_irq = PM8058_IRQ_BASE + PM8058_RESOUT_IRQ;
+
+#ifdef CONFIG_THERMAL_TSENS8X60
+	msm_tsens_early_init(&msm_tsens_pdata);
+#endif
+#ifdef CONFIG_THERMAL_MONITOR
+	msm_thermal_init(&msm_thermal_pdata);
+#endif
 
 	/*
 	 * Initialize RPM first as other drivers and devices may need
