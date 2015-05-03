@@ -8350,9 +8350,7 @@ static struct tsens_platform_data msm_tsens_pdata  = {
 		.hw_type		= MSM_8660,
 		.tsens_num_sensor	= 6,
 };
-#endif
 
-#ifdef CONFIG_THERMAL_TSENS8X60
 static struct platform_device msm_tsens_device = {
 	.name   = "tsens8x60-tm",
 	.id = -1,
