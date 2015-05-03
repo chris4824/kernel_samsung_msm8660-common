@@ -877,6 +877,6 @@ module_init(tsens_tm_init);
 module_exit(tsens_tm_remove);
 
 MODULE_LICENSE("GPL v2");
-MODULE_DESCRIPTION("MSM8960 Temperature Sensor driver");
+MODULE_DESCRIPTION("MSM8X60 Temperature Sensor driver");
 MODULE_VERSION("1.0");
-MODULE_ALIAS("platform:tsens8960-tm");
+MODULE_ALIAS("platform:tsens8x60-tm");
